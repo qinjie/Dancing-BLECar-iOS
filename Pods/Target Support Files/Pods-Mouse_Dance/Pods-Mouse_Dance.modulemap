@@ -1,0 +1,6 @@
+framework module Pods_Mouse_Dance {
+  umbrella header "Pods-Mouse_Dance-umbrella.h"
+
+  export *
+  module * { export * }
+}

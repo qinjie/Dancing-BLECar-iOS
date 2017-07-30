@@ -12,20 +12,56 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    var listTitle = [String]()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
+        UIApplication.shared.statusBarStyle = .lightContent
+        
         self.window = UIWindow(frame: UIScreen.main.bounds)
         let vc = ControlViewController(nibName: "ControlViewController", bundle: nil)
         
-        let nav = UINavigationController(rootViewController: vc)
+        let scanningVC = ScanningViewController(nibName: "ScanningViewController", bundle: nil)
+        
+        let nav = UINavigationController(rootViewController: scanningVC)
+        
+        for i in 0 ..< 10 {
+            self.listTitle.append("\(i + 1)")
+        }
+        
+        let data = UserDefaults.standard.value(forKey: "TitleForRecord")
+        if (data == nil){
+            let dataText = self.convertDataToJSON()
+            UserDefaults.standard.set(dataText, forKey: "TitleForRecord")
+        }
+
         
         self.window?.rootViewController = nav
         self.window?.makeKeyAndVisible()
         
+        
         return true
+    }
+    
+    
+    func convertBtnToJSON(item : String) -> String {
+        return "{ \"Title\" : \"\(item)\"}"
+    }
+    
+    func convertDataToJSON() -> String{
+        var i = 0
+        var result = "["
+        for item in self.listTitle {
+            let str = self.convertBtnToJSON(item: item)
+            if (i != self.listTitle.count - 1) {
+                result = result + str + ","
+            } else {
+                result = result + str + "]"
+            }
+            i = i + 1
+        }
+        return result
     }
 
     func applicationWillResignActive(_ application: UIApplication) {

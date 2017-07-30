@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		36A5F0791F2715DB0082396F /* RecordCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A5F0771F2715DB0082396F /* RecordCollectionViewCell.swift */; };
+		36A5F07A1F2715DB0082396F /* RecordCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 36A5F0781F2715DB0082396F /* RecordCollectionViewCell.xib */; };
 		36A882171F25BAB400A4F009 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A882161F25BAB400A4F009 /* AppDelegate.swift */; };
 		36A882191F25BAB400A4F009 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A882181F25BAB400A4F009 /* ViewController.swift */; };
 		36A8821C1F25BAB400A4F009 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 36A8821A1F25BAB400A4F009 /* Main.storyboard */; };
@@ -14,9 +16,22 @@
 		36A882211F25BAB400A4F009 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 36A8821F1F25BAB400A4F009 /* LaunchScreen.storyboard */; };
 		36A8822D1F25BAFE00A4F009 /* ControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A8822B1F25BAFE00A4F009 /* ControlViewController.swift */; };
 		36A8822E1F25BAFE00A4F009 /* ControlViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 36A8822C1F25BAFE00A4F009 /* ControlViewController.xib */; };
+		36A882321F25DE8300A4F009 /* ScanningViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A882301F25DE8300A4F009 /* ScanningViewController.swift */; };
+		36A882331F25DE8300A4F009 /* ScanningViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 36A882311F25DE8300A4F009 /* ScanningViewController.xib */; };
+		36A882371F25DF1100A4F009 /* DeviceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A882351F25DF1100A4F009 /* DeviceTableViewCell.swift */; };
+		36A882381F25DF1100A4F009 /* DeviceTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 36A882361F25DF1100A4F009 /* DeviceTableViewCell.xib */; };
+		36A8823F1F25F33800A4F009 /* AudioPlayerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A8823E1F25F33800A4F009 /* AudioPlayerManager.swift */; };
+		36B5146A1F26CE0D00A053A5 /* SongTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B514681F26CE0D00A053A5 /* SongTableViewCell.swift */; };
+		36B5146B1F26CE0D00A053A5 /* SongTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 36B514691F26CE0D00A053A5 /* SongTableViewCell.xib */; };
+		36B514701F26CF3100A053A5 /* UIColor-Hex-Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B5146D1F26CF3100A053A5 /* UIColor-Hex-Swift.swift */; };
+		36B514711F26CF3100A053A5 /* UIView+IBInspectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B5146E1F26CF3100A053A5 /* UIView+IBInspectable.swift */; };
+		36B514721F26CF3100A053A5 /* UIView+IRAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B5146F1F26CF3100A053A5 /* UIView+IRAnimation.swift */; };
+		A0C425ACA802EA09F640A914 /* Pods_Mouse_Dance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF45B6B9B07DF9C588C2432A /* Pods_Mouse_Dance.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		36A5F0771F2715DB0082396F /* RecordCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordCollectionViewCell.swift; sourceTree = "<group>"; };
+		36A5F0781F2715DB0082396F /* RecordCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RecordCollectionViewCell.xib; sourceTree = "<group>"; };
 		36A882131F25BAB400A4F009 /* Mouse_Dance.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mouse_Dance.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		36A882161F25BAB400A4F009 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		36A882181F25BAB400A4F009 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -26,6 +41,19 @@
 		36A882221F25BAB400A4F009 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		36A8822B1F25BAFE00A4F009 /* ControlViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlViewController.swift; sourceTree = "<group>"; };
 		36A8822C1F25BAFE00A4F009 /* ControlViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ControlViewController.xib; sourceTree = "<group>"; };
+		36A882301F25DE8300A4F009 /* ScanningViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanningViewController.swift; sourceTree = "<group>"; };
+		36A882311F25DE8300A4F009 /* ScanningViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ScanningViewController.xib; sourceTree = "<group>"; };
+		36A882351F25DF1100A4F009 /* DeviceTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceTableViewCell.swift; sourceTree = "<group>"; };
+		36A882361F25DF1100A4F009 /* DeviceTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DeviceTableViewCell.xib; sourceTree = "<group>"; };
+		36A8823E1F25F33800A4F009 /* AudioPlayerManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioPlayerManager.swift; sourceTree = "<group>"; };
+		36B514681F26CE0D00A053A5 /* SongTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongTableViewCell.swift; sourceTree = "<group>"; };
+		36B514691F26CE0D00A053A5 /* SongTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SongTableViewCell.xib; sourceTree = "<group>"; };
+		36B5146D1F26CF3100A053A5 /* UIColor-Hex-Swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor-Hex-Swift.swift"; sourceTree = "<group>"; };
+		36B5146E1F26CF3100A053A5 /* UIView+IBInspectable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+IBInspectable.swift"; sourceTree = "<group>"; };
+		36B5146F1F26CF3100A053A5 /* UIView+IRAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+IRAnimation.swift"; sourceTree = "<group>"; };
+		BF45B6B9B07DF9C588C2432A /* Pods_Mouse_Dance.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Mouse_Dance.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEF3EA7853A28FA9FD7800EE /* Pods-Mouse_Dance.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mouse_Dance.release.xcconfig"; path = "Pods/Target Support Files/Pods-Mouse_Dance/Pods-Mouse_Dance.release.xcconfig"; sourceTree = "<group>"; };
+		D74362D58ADED52DE22DF773 /* Pods-Mouse_Dance.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mouse_Dance.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Mouse_Dance/Pods-Mouse_Dance.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,17 +61,37 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A0C425ACA802EA09F640A914 /* Pods_Mouse_Dance.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0C1B1666F385C8144E0DF0FD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BF45B6B9B07DF9C588C2432A /* Pods_Mouse_Dance.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		36A5F0761F2715880082396F /* RecordCell */ = {
+			isa = PBXGroup;
+			children = (
+				36A5F0771F2715DB0082396F /* RecordCollectionViewCell.swift */,
+				36A5F0781F2715DB0082396F /* RecordCollectionViewCell.xib */,
+			);
+			name = RecordCell;
+			sourceTree = "<group>";
+		};
 		36A8820A1F25BAB400A4F009 = {
 			isa = PBXGroup;
 			children = (
 				36A882151F25BAB400A4F009 /* Mouse_Dance */,
 				36A882141F25BAB400A4F009 /* Products */,
+				FF8CD579103F12DC3117B7B2 /* Pods */,
+				0C1B1666F385C8144E0DF0FD /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,6 +106,7 @@
 		36A882151F25BAB400A4F009 /* Mouse_Dance */ = {
 			isa = PBXGroup;
 			children = (
+				36B5146C1F26CF2400A053A5 /* Extension */,
 				36A882291F25BADF00A4F009 /* Modal */,
 				36A882281F25BAD700A4F009 /* Controller */,
 				36A882161F25BAB400A4F009 /* AppDelegate.swift */,
@@ -73,6 +122,8 @@
 		36A882281F25BAD700A4F009 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				36A882341F25DEB400A4F009 /* CellDevice */,
+				36A8822F1F25DE7100A4F009 /* ScanningVC */,
 				36A8822A1F25BAE600A4F009 /* ControlVC */,
 			);
 			name = Controller;
@@ -81,6 +132,7 @@
 		36A882291F25BADF00A4F009 /* Modal */ = {
 			isa = PBXGroup;
 			children = (
+				36A8823E1F25F33800A4F009 /* AudioPlayerManager.swift */,
 			);
 			name = Modal;
 			sourceTree = "<group>";
@@ -88,10 +140,58 @@
 		36A8822A1F25BAE600A4F009 /* ControlVC */ = {
 			isa = PBXGroup;
 			children = (
+				36A5F0761F2715880082396F /* RecordCell */,
+				36B514671F26CD4F00A053A5 /* SongCell */,
 				36A8822B1F25BAFE00A4F009 /* ControlViewController.swift */,
 				36A8822C1F25BAFE00A4F009 /* ControlViewController.xib */,
 			);
 			name = ControlVC;
+			sourceTree = "<group>";
+		};
+		36A8822F1F25DE7100A4F009 /* ScanningVC */ = {
+			isa = PBXGroup;
+			children = (
+				36A882301F25DE8300A4F009 /* ScanningViewController.swift */,
+				36A882311F25DE8300A4F009 /* ScanningViewController.xib */,
+			);
+			name = ScanningVC;
+			sourceTree = "<group>";
+		};
+		36A882341F25DEB400A4F009 /* CellDevice */ = {
+			isa = PBXGroup;
+			children = (
+				36A882351F25DF1100A4F009 /* DeviceTableViewCell.swift */,
+				36A882361F25DF1100A4F009 /* DeviceTableViewCell.xib */,
+			);
+			name = CellDevice;
+			sourceTree = "<group>";
+		};
+		36B514671F26CD4F00A053A5 /* SongCell */ = {
+			isa = PBXGroup;
+			children = (
+				36B514681F26CE0D00A053A5 /* SongTableViewCell.swift */,
+				36B514691F26CE0D00A053A5 /* SongTableViewCell.xib */,
+			);
+			name = SongCell;
+			sourceTree = "<group>";
+		};
+		36B5146C1F26CF2400A053A5 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				36B5146D1F26CF3100A053A5 /* UIColor-Hex-Swift.swift */,
+				36B5146E1F26CF3100A053A5 /* UIView+IBInspectable.swift */,
+				36B5146F1F26CF3100A053A5 /* UIView+IRAnimation.swift */,
+			);
+			name = Extension;
+			sourceTree = "<group>";
+		};
+		FF8CD579103F12DC3117B7B2 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				D74362D58ADED52DE22DF773 /* Pods-Mouse_Dance.debug.xcconfig */,
+				CEF3EA7853A28FA9FD7800EE /* Pods-Mouse_Dance.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -101,9 +201,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 36A882251F25BAB400A4F009 /* Build configuration list for PBXNativeTarget "Mouse_Dance" */;
 			buildPhases = (
+				76122B6BE58CFEDB7A5372C0 /* [CP] Check Pods Manifest.lock */,
 				36A8820F1F25BAB400A4F009 /* Sources */,
 				36A882101F25BAB400A4F009 /* Frameworks */,
 				36A882111F25BAB400A4F009 /* Resources */,
+				2FB78AD90D87CEC53DB0764C /* [CP] Embed Pods Frameworks */,
+				D705F5EB0F5AFF6E6EA5A33A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -154,7 +257,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				36A882331F25DE8300A4F009 /* ScanningViewController.xib in Resources */,
+				36A882381F25DF1100A4F009 /* DeviceTableViewCell.xib in Resources */,
 				36A882211F25BAB400A4F009 /* LaunchScreen.storyboard in Resources */,
+				36A5F07A1F2715DB0082396F /* RecordCollectionViewCell.xib in Resources */,
+				36B5146B1F26CE0D00A053A5 /* SongTableViewCell.xib in Resources */,
 				36A8821E1F25BAB400A4F009 /* Assets.xcassets in Resources */,
 				36A8822E1F25BAFE00A4F009 /* ControlViewController.xib in Resources */,
 				36A8821C1F25BAB400A4F009 /* Main.storyboard in Resources */,
@@ -163,14 +270,70 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		2FB78AD90D87CEC53DB0764C /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Mouse_Dance/Pods-Mouse_Dance-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		76122B6BE58CFEDB7A5372C0 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		D705F5EB0F5AFF6E6EA5A33A /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Mouse_Dance/Pods-Mouse_Dance-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		36A8820F1F25BAB400A4F009 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				36A882371F25DF1100A4F009 /* DeviceTableViewCell.swift in Sources */,
+				36A8823F1F25F33800A4F009 /* AudioPlayerManager.swift in Sources */,
 				36A882191F25BAB400A4F009 /* ViewController.swift in Sources */,
+				36B514701F26CF3100A053A5 /* UIColor-Hex-Swift.swift in Sources */,
+				36B5146A1F26CE0D00A053A5 /* SongTableViewCell.swift in Sources */,
 				36A8822D1F25BAFE00A4F009 /* ControlViewController.swift in Sources */,
+				36B514711F26CF3100A053A5 /* UIView+IBInspectable.swift in Sources */,
 				36A882171F25BAB400A4F009 /* AppDelegate.swift in Sources */,
+				36A5F0791F2715DB0082396F /* RecordCollectionViewCell.swift in Sources */,
+				36B514721F26CF3100A053A5 /* UIView+IRAnimation.swift in Sources */,
+				36A882321F25DE8300A4F009 /* ScanningViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -293,12 +456,14 @@
 		};
 		36A882261F25BAB400A4F009 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D74362D58ADED52DE22DF773 /* Pods-Mouse_Dance.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 77G8PUN44T;
 				INFOPLIST_FILE = Mouse_Dance/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.anhtuan.Mouse-Dance";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.anhtuan.Mouse-Dance2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -306,12 +471,14 @@
 		};
 		36A882271F25BAB400A4F009 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CEF3EA7853A28FA9FD7800EE /* Pods-Mouse_Dance.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 77G8PUN44T;
 				INFOPLIST_FILE = Mouse_Dance/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.anhtuan.Mouse-Dance";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.anhtuan.Mouse-Dance2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -336,6 +503,7 @@
 				36A882271F25BAB400A4F009 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
