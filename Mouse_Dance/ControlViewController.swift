@@ -78,6 +78,8 @@ class ControlViewController: UIViewController, UITextFieldDelegate {
     
     var currentDescription : UITextField?
     
+    var countTime = 0
+    
     @IBOutlet weak var lblNameSong : UILabel!
     //Record
     @IBOutlet weak var viewRecordBG : UIView!
@@ -92,6 +94,11 @@ class ControlViewController: UIViewController, UITextFieldDelegate {
     var actionToEnable : UIAlertAction?
     
     var listTitleButton = [String]()
+    
+    var timerDirection : Timer?
+    var firstCha : String = ""
+    var secondCha : String = ""
+    
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
@@ -322,7 +329,7 @@ class ControlViewController: UIViewController, UITextFieldDelegate {
     }
     
     func setup(){
-        self.setupCoreMotion()
+        //self.setupCoreMotion()
         self.setUpBLE()
         self.setupTable()
         
@@ -560,7 +567,7 @@ class ControlViewController: UIViewController, UITextFieldDelegate {
         //Coonect/ Disconnect
     @IBAction func connectCar(_ sender : UIButton){
         self.sendData(str: "+CONN")
-        self.sendData(str: "q")
+        self.sendData(str: "3")
     }
     
     @IBAction func disconnectCar(_ sender : UIButton){
@@ -640,6 +647,122 @@ class ControlViewController: UIViewController, UITextFieldDelegate {
     }
     
     //func setup Direction
+    
+    func sendByTime(){
+        var timeStop = 13
+        
+        if (self.countTime == 0){
+            self.sendData(str: self.firstCha)
+        } else  if ( self.countTime == 6){
+            self.sendData(str: self.secondCha)
+        } else if (( self.countTime == 3) || (self.countTime == 10)){
+           self.sendData(str: "S")
+        }
+        self.countTime = self.countTime + 1
+        self.countTime = (self.countTime) % timeStop
+    }
+    
+    func sendByInterval(first : String, right : String){
+        self.firstCha = first
+        self.secondCha = right
+        self.timerDirection = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.sendByTime), userInfo: nil, repeats: true)
+    }
+    
+    func sendByTimeDown(){
+        var timeStop = 13
+        
+        if (self.countTime == 0){
+            self.sendData(str: self.firstCha)
+        } else  if ( self.countTime == 7){
+            self.sendData(str: self.secondCha)
+        } else if (( self.countTime == 4) || (self.countTime == 10)){
+            self.sendData(str: "S")
+        }
+        self.countTime = self.countTime + 1
+        self.countTime = (self.countTime) % timeStop
+    }
+    
+    func sendDownByInterval(first :String, right : String){
+        self.firstCha = first
+        self.secondCha = right
+        self.timerDirection = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.sendByTimeDown), userInfo: nil, repeats: true)
+    }
+    
+    
+    func sendLeftRight(){
+        var timeStop = 17
+        
+        if (self.countTime == 0){
+            self.sendData(str: self.firstCha)
+        } else  if ( self.countTime == 8){
+            self.sendData(str: self.secondCha)
+        } else if (( self.countTime == 5) || (self.countTime == 14)){
+            self.sendData(str: "S")
+        }
+        self.countTime = self.countTime + 1
+        self.countTime = (self.countTime) % timeStop
+    }
+    
+    func sendLeftInterval(first : String, right : String){
+        self.firstCha = first
+        self.secondCha = right
+        
+        self.timerDirection = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.sendLeftRight), userInfo: nil, repeats: true)
+    
+    }
+    
+    func sendRightLeft(){
+        var timeStop = 17
+        
+        if (self.countTime == 0){
+            self.sendData(str: self.firstCha)
+        } else  if ( self.countTime == 9){
+            self.sendData(str: self.secondCha)
+        } else if (( self.countTime == 5) || (self.countTime == 14)){
+            self.sendData(str: "S")
+        }
+        self.countTime = self.countTime + 1
+        self.countTime = (self.countTime) % timeStop
+    }
+    
+    func sendRightInterval(first : String, right : String){
+        self.firstCha = first
+        self.secondCha = right
+        
+        self.timerDirection = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.sendRightLeft), userInfo: nil, repeats: true)
+    }
+    
+    @IBAction func pressDirection(_ sender : UIButton){
+        self.countTime = 0
+        switch sender {
+        case btnUp:
+            //self.sendData(str: "F")
+            self.sendByInterval(first: "F", right: "B")
+        case btnDown:
+            //self.sendData(str: "B")
+            self.sendDownByInterval(first: "B", right: "F")
+            //self.sendByInterval(first: "B", right: "F")
+            NSLog("Down")
+        case btnLeft:
+            //self.sendData(str: "J")
+            //self.sendData(str: "L")
+            self.sendLeftInterval(first: "L", right: "H")
+            NSLog("Left")
+        case btnRight:
+            self.sendRightInterval(first: "R", right: "J")
+            //self.sendLeftInterval(first: "R", right: "J")
+            //self.sendData(str: "H")
+//            self.sendByInterval(first: "R", right: "L")
+            NSLog("Right")
+        default:
+            break
+        }
+    }
+    
+    @IBAction func touchUpInsde(_  sender : UIButton){
+        self.sendData(str: "D")
+        self.timerDirection?.invalidate()
+    }
     
     func changeStatus(_ sender : UIButton?){
         if ( self.currentTarget != nil){
