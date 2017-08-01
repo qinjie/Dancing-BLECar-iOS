@@ -14,6 +14,11 @@ import SwiftyJSON
 
 let TIME_INTERVAL = 0.3
 
+enum TypeRemote {
+    case Control
+    case Dancing
+}
+
 class ControlViewController: UIViewController, UITextFieldDelegate {
     var centralManager : CBCentralManager?
     var connectingPeripheral : CBPeripheral?
@@ -98,7 +103,20 @@ class ControlViewController: UIViewController, UITextFieldDelegate {
     var timerDirection : Timer?
     var firstCha : String = ""
     var secondCha : String = ""
+    var remoteType =  TypeRemote.Control
+    var btnDancingHold : UIButton?
+    var currentSendDancing : String = ""
+    var isMovingPhone = false
     
+    var currentSpeed = 3
+    
+    @IBOutlet weak var switchBtn : UISwitch!
+    @IBOutlet weak var slider : UISlider!
+    
+    @IBOutlet weak var btnLeftRight : UIButton!
+    @IBOutlet weak var btnGoAroud : UIButton!
+    @IBOutlet weak var btnUpDown : UIButton!
+    @IBOutlet weak var viewDancing : UIView!
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
@@ -196,6 +214,7 @@ class ControlViewController: UIViewController, UITextFieldDelegate {
     }
     
     func recordTapped() {
+        self.setupRecorder()
         if audioRecorder == nil {
             self.currentTimeTouchUp = Date()
             self.timerRecord = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.timerRecordRun), userInfo: nil, repeats: true)
@@ -364,192 +383,50 @@ class ControlViewController: UIViewController, UITextFieldDelegate {
             
             let sum = sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2))
             
-            if ( sum > 6) {
-                if ( z < -5) {
-                    //right
-                    if( self.currentSendCharacter == "R"){
-                        self.changeStatus(nil)
-                    } else {
-                        NSLog("Right")
-                        
-                        self.sendData(str: "R")
-                        
-                        Timer.scheduledTimer(timeInterval: TIME_INTERVAL, target: self, selector: #selector(self.sendStopAfterSecond), userInfo: nil, repeats: false)
-                        
-                        self.currentSendCharacter = "R"
-                        self.changeStatus(self.btnRight)
-                    }
-                    
-                } else if (z > 5) {
-                    //Left
-                    if ( self.currentSendCharacter == "L"){
-                        
-                    } else {
-                        NSLog("Left")
-                        
-                        self.sendData(str: "L")
-                        
-                        Timer.scheduledTimer(timeInterval: TIME_INTERVAL, target: self, selector: #selector(self.sendStopAfterSecond), userInfo: nil, repeats: false)
-                        
-                        self.currentSendCharacter = "L"
-                        self.changeStatus(self.btnLeft)
-                    }
-                    
-                } else {
-                    //                        self.sendData(str: "D")
-                    let x = self.motionManager.accelerometerData?.acceleration.x ?? 0.0
-                    let y = self.motionManager.accelerometerData?.acceleration.y ?? 0.0
-                    let z = self.motionManager.accelerometerData?.acceleration.z ?? 0.0
-                    
-                    
-                    let angle = atan2(z, y) * Double(180) / Double.pi
-                    
-                    if (( y > 0.6) && ( y < 1)) {
-                        if ( self.currentSendCharacter == "F"){
-                            self.changeStatus(nil)
-                        } else {
-                            self.sendData(str: "F")
-                            Timer.scheduledTimer(timeInterval: TIME_INTERVAL, target: self, selector: #selector(self.sendStopAfterSecond), userInfo: nil, repeats: false)
+            if (self.btnDancingHold == nil){
+                if (self.currentSendDancing != "S"){
+                    self.sendData(str: "S")
+                    self.currentSendDancing = "S"
+                }
+                return
+            }
+            
+            if ( sum > 4) {
+                self.isMovingPhone = true
+                switch self.btnDancingHold! {
+                    case self.btnUpDown:
+                        if (self.currentSendDancing != "F"){
+                            self.sendByInterval(first: "F", right: "B")
                             
-                            self.currentSendCharacter = "F"
-                            self.changeStatus(self.btnUp)
+                            self.currentSendDancing = "F"
                         }
-                    } else if ( (y < -0.6) && ( y > -1)) {
-                        if (self.currentSendCharacter == "B"){
-                            self.changeStatus(nil)
-                        } else {
-                            self.sendData(str: "B")
-                            Timer.scheduledTimer(timeInterval: TIME_INTERVAL, target: self, selector: #selector(self.sendStopAfterSecond), userInfo: nil, repeats: false)
-                            
-                            self.currentSendCharacter = "B"
-                            self.changeStatus(self.btnDown)
+                    
+                    case self.btnLeftRight:
+                        if (self.currentSendDancing != "L"){
+                            self.sendLeftInterval(first: "L", right: "H")
+                            self.currentSendDancing = "L"
                         }
-                    }
+                    case self.btnGoAroud:
+                        if (self.currentSendDancing != "R"){
+                            //self.sendData(str: "R")
+                            self.sendDownByInterval(first: "R", right: "J")
+                            self.currentSendDancing = "R"
+                        }
+                default:
+                    break
                 }
             } else {
-                let x = self.motionManager.accelerometerData?.acceleration.x ?? 0.0
-                let y = self.motionManager.accelerometerData?.acceleration.y ?? 0.0
-                let z = self.motionManager.accelerometerData?.acceleration.z ?? 0.0
-                
-                let angle = atan2(z, y) * Double(180) / Double.pi
-                
-                if (( y > 0.60) && ( y < 1.1)) {
-                    if ( self.currentSendCharacter == "F"){
-                        self.changeStatus(nil)
-                    } else {
-                        self.sendData(str: "F")
-                        Timer.scheduledTimer(timeInterval: TIME_INTERVAL, target: self, selector: #selector(self.sendStopAfterSecond), userInfo: nil, repeats: false)
-                        
-                        self.currentSendCharacter = "F"
-                        self.changeStatus(self.btnUp)
-                    }
-                } else if ( (y < -0.60) && ( y > -1.1)) {
-                    if (self.currentSendCharacter == "B"){
-                        self.changeStatus(nil)
-                    } else {
-                        self.sendData(str: "B")
-                        Timer.scheduledTimer(timeInterval: TIME_INTERVAL, target: self, selector: #selector(self.sendStopAfterSecond), userInfo: nil, repeats: false)
-                        
-                        self.currentSendCharacter = "B"
-                        self.changeStatus(self.btnDown)
-                    }
-                } else {
-                    self.changeStatus(nil)
-                    self.currentSendCharacter = "S"
+                self.isMovingPhone = false
+                if (self.timerDirection != nil){
+                    return
+                }
+                if (self.currentSendDancing != "S"){
+                    self.sendData(str: "S")
+                    self.currentSendDancing = "S"
                 }
             }
         }
- 
-        /*
-        self.motionManager.startAccelerometerUpdates(to: OperationQueue.current!) { (data, error) in
-            let x = data?.acceleration.x ?? 0.0
-            let y = data?.acceleration.y ?? 0.0
-            let z = data?.acceleration.z ?? 0.0
-            
-            
-            
-            let angle = atan2(z, y) * Double(180) / Double.pi
-            
-            if (( y > 0.5) && ( y < 1)) {
-                if ( self.currentSendCharacter == "F"){
-                    self.changeStatus(nil)
-                } else {
-                    self.sendData(str: "F")
-                    Timer.scheduledTimer(timeInterval: TIME_INTERVAL, target: self, selector: #selector(self.sendStopAfterSecond), userInfo: nil, repeats: false)
-                    
-                    self.currentSendCharacter = "F"
-                    self.changeStatus(self.btnUp)
-                }
-            } else if ( (y < -0.5) && ( y > -1)) {
-                if (self.currentSendCharacter == "B"){
-                    self.changeStatus(nil)
-                } else {
-                    self.sendData(str: "B")
-                    Timer.scheduledTimer(timeInterval: TIME_INTERVAL, target: self, selector: #selector(self.sendStopAfterSecond), userInfo: nil, repeats: false)
-                    
-                    self.currentSendCharacter = "B"
-                    self.changeStatus(self.btnDown)
-                }
-            } else {
-                let gravity = self.motionManager.gyroData?.rotationRate
-                
-                let x = gravity?.x ?? 0.0
-                let y = gravity?.y ?? 0.0
-                let z = gravity?.z ?? 0.0
-                
-                
-                let sum = sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2))
-                
-                if ( sum > 8) {
-                    if ( z < -7) {
-                        //right
-                        if( self.currentSendCharacter == "R"){
-                            self.changeStatus(nil)
-                        } else {
-                            NSLog("Right")
-                            
-                            self.sendData(str: "R")
-                            
-                            Timer.scheduledTimer(timeInterval: TIME_INTERVAL, target: self, selector: #selector(self.sendStopAfterSecond), userInfo: nil, repeats: false)
-                            
-                            self.currentSendCharacter = "R"
-                            self.changeStatus(self.btnRight)
-                        }
-                        
-                    } else if (z > 7) {
-                        //Left
-                        if ( self.currentSendCharacter == "L"){
-                            
-                        } else {
-                            NSLog("Left")
-                            
-                            self.sendData(str: "L")
-                            
-                            Timer.scheduledTimer(timeInterval: TIME_INTERVAL, target: self, selector: #selector(self.sendStopAfterSecond), userInfo: nil, repeats: false)
-                            
-                            self.currentSendCharacter = "L"
-                            self.changeStatus(self.btnLeft)
-                        }
-                        
-                    } else {
-//                        self.sendData(str: "D")
-                        
-                        self.currentSendCharacter = "S"
-                        self.changeStatus(nil)
-                    }
-                } else {
-//                    self.sendData(str: "D")
-                    if ( self.currentSendCharacter == "L"){
-                        self.currentSendCharacter = "S"
-                    } else if (self.currentSendCharacter == "R"){
-                        self.currentSendCharacter = "S"
-                    }
-                    self.changeStatus(nil)
-                }
-            }
-        }
-         */
-    }
+     }
     
     func setupTable(){
         tbl.separatorColor = UIColor.init(rgba: "#F5F5F5")
@@ -567,7 +444,19 @@ class ControlViewController: UIViewController, UITextFieldDelegate {
         //Coonect/ Disconnect
     @IBAction func connectCar(_ sender : UIButton){
         self.sendData(str: "+CONN")
-        self.sendData(str: "3")
+        
+        let value = slider.value * 10
+        
+        if (Int(value) != self.currentSpeed){
+            if (value == 10){
+                self.sendData(str: "q")
+            } else {
+                self.sendData(str: "\(Int(value))")
+            }
+            self.currentSpeed = Int(value)
+        } else {
+            
+        }
     }
     
     @IBAction func disconnectCar(_ sender : UIButton){
@@ -632,6 +521,7 @@ class ControlViewController: UIViewController, UITextFieldDelegate {
         if (data != nil){
             if (self.characterictist != nil){
                 self.connectingPeripheral?.writeValue(data!, for: self.characterictist!, type: CBCharacteristicWriteType.withResponse)
+                
             }
         }
     }
@@ -649,7 +539,15 @@ class ControlViewController: UIViewController, UITextFieldDelegate {
     //func setup Direction
     
     func sendByTime(){
-        var timeStop = 13
+        let timeStop = 13
+        
+        if (self.isMovingPhone == false){
+            if (self.countTime == 0){
+                self.timerDirection?.invalidate()
+                self.timerDirection = nil
+                return
+            }
+        }//stop
         
         if (self.countTime == 0){
             self.sendData(str: self.firstCha)
@@ -665,19 +563,28 @@ class ControlViewController: UIViewController, UITextFieldDelegate {
     func sendByInterval(first : String, right : String){
         self.firstCha = first
         self.secondCha = right
-        self.timerDirection = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.sendByTime), userInfo: nil, repeats: true)
+        if (self.timerDirection == nil){
+            self.timerDirection = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.sendByTime), userInfo: nil, repeats: true)
+        }
     }
     
     func sendByTimeDown(){
-        var timeStop = 13
+        var timeStop = 17 * 2 + 4
+        
+        if (self.isMovingPhone == false){
+            if (self.countTime == 0){
+                self.timerDirection?.invalidate()
+                self.timerDirection = nil
+                return
+            }
+        }//stop
         
         if (self.countTime == 0){
             self.sendData(str: self.firstCha)
-        } else  if ( self.countTime == 7){
+        } else if (self.countTime == 20){
             self.sendData(str: self.secondCha)
-        } else if (( self.countTime == 4) || (self.countTime == 10)){
-            self.sendData(str: "S")
         }
+        
         self.countTime = self.countTime + 1
         self.countTime = (self.countTime) % timeStop
     }
@@ -685,12 +592,22 @@ class ControlViewController: UIViewController, UITextFieldDelegate {
     func sendDownByInterval(first :String, right : String){
         self.firstCha = first
         self.secondCha = right
-        self.timerDirection = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.sendByTimeDown), userInfo: nil, repeats: true)
+        if ( self.timerDirection == nil){
+            self.timerDirection = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.sendByTimeDown), userInfo: nil, repeats: true)
+        }
     }
     
     
     func sendLeftRight(){
-        var timeStop = 17
+        let timeStop = 17
+        
+        if (self.isMovingPhone == false){
+            if (self.countTime == 0){
+                self.timerDirection?.invalidate()
+                self.timerDirection = nil
+                return
+            }
+        }//stop
         
         if (self.countTime == 0){
             self.sendData(str: self.firstCha)
@@ -707,8 +624,9 @@ class ControlViewController: UIViewController, UITextFieldDelegate {
         self.firstCha = first
         self.secondCha = right
         
-        self.timerDirection = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.sendLeftRight), userInfo: nil, repeats: true)
-    
+        if (self.timerDirection == nil){
+            self.timerDirection = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.sendLeftRight), userInfo: nil, repeats: true)
+        }
     }
     
     func sendRightLeft(){
@@ -732,27 +650,51 @@ class ControlViewController: UIViewController, UITextFieldDelegate {
         self.timerDirection = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.sendRightLeft), userInfo: nil, repeats: true)
     }
     
+    @IBAction func holdButtonDancing(_ sender : UIButton){
+        self.btnDancingHold = sender
+    }
+    
+    
+    
+    @IBAction func changeValue(_ sender : UISlider){
+        let value = sender.value * 10
+        
+        if (Int(value) != self.currentSpeed){
+            if (value == 10){
+                self.sendData(str: "q")
+            } else {
+                self.sendData(str: "\(Int(value))")
+            }
+            self.currentSpeed = Int(value)
+        } else {
+            
+        }
+        
+    }
+    
+    @IBAction func releaseButtonDancing(_ sender : UIButton){
+        self.btnDancingHold = nil
+        self.timerDirection?.invalidate()
+        self.timerDirection = nil
+    }
+    
     @IBAction func pressDirection(_ sender : UIButton){
         self.countTime = 0
         switch sender {
         case btnUp:
-            //self.sendData(str: "F")
-            self.sendByInterval(first: "F", right: "B")
+            self.sendData(str: "F")
+            //self.sendByInterval(first: "F", right: "B")
         case btnDown:
-            //self.sendData(str: "B")
-            self.sendDownByInterval(first: "B", right: "F")
-            //self.sendByInterval(first: "B", right: "F")
+            self.sendData(str: "B")
+            //self.sendDownByInterval(first: "B", right: "F")
             NSLog("Down")
         case btnLeft:
-            //self.sendData(str: "J")
-            //self.sendData(str: "L")
-            self.sendLeftInterval(first: "L", right: "H")
+            self.sendData(str: "L")
+            //self.sendLeftInterval(first: "L", right: "H")
             NSLog("Left")
         case btnRight:
-            self.sendRightInterval(first: "R", right: "J")
-            //self.sendLeftInterval(first: "R", right: "J")
-            //self.sendData(str: "H")
-//            self.sendByInterval(first: "R", right: "L")
+            self.sendData(str: "R")
+            //self.sendRightInterval(first: "R", right: "J")
             NSLog("Right")
         default:
             break
@@ -773,6 +715,26 @@ class ControlViewController: UIViewController, UITextFieldDelegate {
         }
         sender?.backgroundColor = UIColor.init(rgba: "#FFCC80")
         self.currentTarget = sender
+    }
+    
+    func changeRemoteType(type : TypeRemote){
+        self.remoteType = type
+        if ( type == .Dancing){
+            self.setupCoreMotion()
+            self.viewDancing.isHidden = false
+        } else {
+            self.viewDancing.isHidden = true
+            self.motionManager.stopGyroUpdates()
+            self.motionManager.stopAccelerometerUpdates()
+        }
+    }
+    
+    @IBAction func changeSwitch(_ sender : UISwitch){
+        if (sender.isOn){
+            self.changeRemoteType(type: .Dancing)
+        } else {
+            self.changeRemoteType(type: .Control)
+        }
     }
 }
 
@@ -1015,7 +977,7 @@ extension ControlViewController : delegateRecord {
         if (self.viewRecordBG.isHidden == false){
             return
         }
-        self.setupRecorder()
+        
         self.currentRecordIndex = index!.row
         
         let text = self.listTitleButton[self.currentRecordIndex]
