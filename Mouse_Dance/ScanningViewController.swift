@@ -41,6 +41,10 @@ class ScanningViewController: UIViewController {
     var keepScanning :Bool = false
     var state : String = "Nothing"
     var currentcharacteristtic : CBCharacteristic?
+    
+    var startConnecting = Date()
+    
+    var timerCheck : Timer? = nil
 
     var currentTimer : Timer?
 
@@ -53,28 +57,72 @@ class ScanningViewController: UIViewController {
         tableView.addSubview(refreshControl)
         
         self.centralManager = CBCentralManager(delegate: self, queue: nil)
+        
+        
         tableView.register(UINib.init(nibName: "DeviceTableViewCell", bundle: nil), forCellReuseIdentifier: "DeviceTableViewCell")
         tableView.tableFooterView = UIView.init(frame: CGRect.zero)
+        
+        self.navigationController?.navigationBar.barTintColor = UIColor.init(rgba: "#1565C0")
+        self.navigationController?.navigationBar.isTranslucent = false
+        
+        self.navigationController?.navigationBar.titleTextAttributes = [
+            NSForegroundColorAttributeName : UIColor.white
+        ]
+        
+        self.title = "Scanner"
         // Do any additional setup after loading the view.
     }
-
+    
+    override func viewDidAppear(_ animated: Bool) {
+        
+        self.peripherals.removeAll()
+        self.tableView.reloadData()
+        
+        self.centralManager = CBCentralManager(delegate: self, queue: nil)
+        
+        if (!self.centralManager.isScanning){
+            self.centralManager.scanForPeripherals(withServices: [CBUUID.init(string: SeriveDefine.Service)], options: nil)
+        }
+        
+        self.centralManager.scanForPeripherals(withServices: [CBUUID.init(string: SeriveDefine.Service)], options: nil)
+    }
+    
+    func refresher() {
+        
+        self.peripherals.removeAll()
+        self.tableView.reloadData()
+        self.refreshControl.endRefreshing()
+        
+        self.centralManager.scanForPeripherals(withServices: [CBUUID.init(string: SeriveDefine.Service)], options: nil)
+        
+    }
+    
+    func getTimeConnect(){
+        let now = Date()
+        let seconds = now.seconds(from: self.startConnecting)
+        
+        if (seconds >= 5){
+            if (self.connectingPeripheral != nil){
+                self.centralManager.cancelPeripheralConnection(self.connectingPeripheral!)
+            }
+            
+            self.peripherals.removeAll()
+            self.tableView.reloadData()
+            self.centralManager.scanForPeripherals(withServices: [CBUUID.init(string: SeriveDefine.Service)], options: nil)
+            
+            self.timerCheck?.invalidate()
+        }
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    func refresher() {
-        //        if !self.centralManager.isScanning {
-        //            self.centralManager.scanForPeripherals(withServices: nil, options: nil)
-        //        }
-        //        self.peripherals.removeAll()
-        //        self.tableView.reloadData()
-        //        self.refreshControl.endRefreshing()
-    }
-
+   
     func pauseScan(){
         
     }
+    
 }
 
 
@@ -85,10 +133,13 @@ extension ScanningViewController : CBCentralManagerDelegate {
             keepScanning = true
             
             _ = Timer(timeInterval: TimeInterval(timerScanInterval), target: self, selector: #selector(ScanningViewController.pauseScan), userInfo: nil, repeats: false)
-            centralManager.scanForPeripherals(withServices: nil, options: nil) //search with any Service
+            centralManager.scanForPeripherals(withServices: [CBUUID.init(string: SeriveDefine.Service)], options: nil) //search with any Service
         //typical, we should add service for find exactly what you want
         case .poweredOff:
             state = "Bluethooth on this device is currently powered off"
+            
+            self.peripherals.removeAll()
+            self.tableView.reloadData()
         case .unsupported:
             state = "This device does not support Bluetooth Low Energy."
         case .unauthorized:
@@ -137,40 +188,22 @@ extension ScanningViewController : UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         NSLog("Try to connect")
+        self.startConnecting = Date()
+        
         let peripheral = self.peripherals[indexPath.row].obj
         
-        self.centralManager.stopScan()
+        self.timerCheck = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.getTimeConnect), userInfo: nil, repeats: true)
+        
+        
         self.connectingPeripheral = peripheral
         
         //self.connectingPeripheral?.delegate = self
         self.centralManager.connect(self.connectingPeripheral!, options: nil)
     }
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+        self.timerCheck?.invalidate()
         NSLog("Connecting to device is ready")
-        //-------------------------------------Not working--------------------------------------------------
-        //        let testVC = TestingViewController(nibName: "TestingViewController", bundle: nil)
-        //
-        //        testVC.centralManager = self.centralManager
-        //        testVC.connectingPeripheral = peripheral
-        //        self.navigationController?.pushViewController(testVC, animated: true)
-        //        return
-        //---------------------------------------------------------------------------------------------------
-        /*
-         let displayVC = DisplayViewController(nibName: "DisplayViewController", bundle: nil)
-         displayVC.centralManager = self.centralManager
-         displayVC.connectingPeripheral = peripheral
-         self.present(displayVC, animated: true) {
-         
-         }
-         */
-        /*
-         let controlBtnVC = ControllButtonViewController(nibName: "ControllButtonViewController", bundle: nil)
-         controlBtnVC.centralManager = self.centralManager
-         controlBtnVC.connectingPeripheral = peripheral
-         self.present(controlBtnVC, animated: true) {
-         
-         }
-         */
+        
         
         let uic = ControlViewController(nibName: "ControlViewController", bundle: nil)        
         uic.centralManager = self.centralManager
@@ -183,32 +216,6 @@ extension ScanningViewController : UITableViewDataSource, UITableViewDelegate {
     }
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
         NSLog("Connect is fail")
-    }
-    func updateHeart(data:NSData){
-        let dataLength = data.length / MemoryLayout<UInt16>.size
-        
-        // 1
-        // create an array to contain the 16-bit values
-        var dataArray = [UInt16](repeating: 0, count:dataLength)
-        
-        // 2
-        // extract the data from the dataBytes object
-        data.getBytes(&dataArray, length: dataLength * MemoryLayout<Int16>.size)
-        
-        // 3
-        // get the value of the of the ambient temperature element
-        NSLog("\(dataArray.count)")
-        if (dataArray.count != 0) {
-            let rawAmbientTemp:UInt16 = dataArray[0]
-            NSLog("Raw Temp\(rawAmbientTemp)")
-            let ambientTempC = Double(rawAmbientTemp)
-            //let ambientTempF = convertCelciusToFahrenheit(ambientTempC)
-            
-            // 5
-            // Use the Ambient Temperature reading for our label
-            let temp = Int(ambientTempC)
-            
-        }
     }
 }
 extension ScanningViewController : CBPeripheralDelegate {
@@ -264,16 +271,5 @@ extension ScanningViewController : CBPeripheralDelegate {
         NSLog("Update state Notification  \(characteristic.isNotifying)   \(characteristic.uuid.uuidString)")
     }
     
-    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-        NSLog("Update Characteristic")
-        self.displayTemperature(data: (characteristic.value)!)
-        
-    }
-    
-    func displayTemperature(data:Data) {
-        let a = String(data: data, encoding: String.Encoding.utf8)
-        NSLog("\(String(describing: a))")
-        
-    }
 }
 

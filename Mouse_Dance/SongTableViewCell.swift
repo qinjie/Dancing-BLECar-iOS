@@ -11,7 +11,7 @@ import MediaPlayer
 
 extension String {
     func convertTime() -> String {
-        let value = (self as NSString).integerValue
+        let value = Int((self as NSString).doubleValue)
         let minutes = value / 60
         let second = value % 60
         

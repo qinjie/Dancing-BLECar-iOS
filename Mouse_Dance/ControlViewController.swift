@@ -334,6 +334,12 @@ class ControlViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidAppear(_ animated: Bool) {
         self.tbl.reloadData()
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, with: AVAudioSessionCategoryOptions.allowBluetooth)
+        } catch {
+            
+        }
+        
     }
     
     func setupInitTitle(){
@@ -490,11 +496,17 @@ class ControlViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func previousMusic(_ sender : UIButton){
+        if (self.listSongs.count == 0){
+            return
+        }
         self.currentIndex = (self.currentIndex - 1 + self.listSongs.count) % self.listSongs.count
         self.playAtIndex(index: self.currentIndex)
     }
     
     @IBAction func nextMusic(_ sender : UIButton){
+        if (self.listSongs.count == 0){
+            return
+        }
         self.currentIndex = (self.currentIndex + 1) % self.listSongs.count
         self.playAtIndex(index: self.currentIndex)
     }
@@ -655,7 +667,6 @@ class ControlViewController: UIViewController, UITextFieldDelegate {
     }
     
     
-    
     @IBAction func changeValue(_ sender : UISlider){
         let value = sender.value * 10
         
@@ -744,13 +755,14 @@ extension ControlViewController : CBCentralManagerDelegate {
             let alertVC = UIAlertController(title: "Warning", message: "\(error!.localizedDescription)", preferredStyle: UIAlertControllerStyle.alert)
             
             let alertAction = UIAlertAction(title: "OK", style: .default) { (action) in
-                self.dismiss(animated: true, completion: nil)
                 self.centralManager?.cancelPeripheralConnection(self.connectingPeripheral!)
+                
+                self.dismiss(animated: true, completion: nil)
             }
             alertVC.addAction(alertAction)
+            
             self.show(alertVC, sender: nil)
         }
-        
     }
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         
@@ -760,16 +772,21 @@ extension ControlViewController : CBCentralManagerDelegate {
         if (central.retrieveConnectedPeripherals(withServices: [uuid])).count == 0 {
             
             let alertVC = UIAlertController(title: "Warning", message: "Disconnected", preferredStyle: UIAlertControllerStyle.alert)
+            
+            let alertAction = UIAlertAction(title: "OK", style: .default) { (action) in
+                self.centralManager?.cancelPeripheralConnection(self.connectingPeripheral!)
+                
+                self.dismiss(animated: true, completion: nil)
+            }
+            alertVC.addAction(alertAction)
+            
+            
             self.show(alertVC, sender: nil)
         }
     }
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
         
     }
-    func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-        
-    }
-    
 }
 
 extension ControlViewController : CBPeripheralDelegate {
@@ -849,6 +866,7 @@ extension ControlViewController : UITableViewDataSource, UITableViewDelegate {
         
         do {
             self.avplayer = try AVAudioPlayer.init(contentsOf: obj.assetURL!)
+            
             self.avplayer?.delegate = self
         } catch {
             
@@ -859,7 +877,6 @@ extension ControlViewController : UITableViewDataSource, UITableViewDelegate {
     }
     
     func setUpPlaySong(){
-        AudioPlayerManager.shared.pause()
         self.avplayer?.play()
         self.btnPlay.setBackgroundImage(#imageLiteral(resourceName: "Pause"), for: .normal)
         self.lblNameSong.text = self.currentSong?.title
@@ -885,16 +902,17 @@ extension ControlViewController : MPMediaPickerControllerDelegate {
 extension ControlViewController : AVAudioPlayerDelegate {
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         NSLog("Finish Cmnr")
+        
+        if (self.listSongs.count == 0){
+            return
+        }
+        self.currentIndex = (self.currentIndex + 1) % self.listSongs.count
+        self.playAtIndex(index: self.currentIndex)
+        
     }
 }
 
 extension NSLayoutConstraint {
-    /**
-     Change multiplier constraint
-     
-     - parameter multiplier: CGFloat
-     - returns: NSLayoutConstraint
-     */
     func setMultiplier(multiplier:CGFloat) -> NSLayoutConstraint {
         
         NSLayoutConstraint.deactivate([self])
@@ -961,32 +979,148 @@ extension ControlViewController : delegateRecord {
             self.btnPlay.setBackgroundImage(#imageLiteral(resourceName: "Play"), for: .normal)
         }
         
+        self.lblNameSong.text = self.listTitleButton[(index?.row)!]
+        self.lblStart.text = "00:00"
+        
+        
         
         var url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         
         url = url.appendingPathComponent("recording\(index!.row).m4a")
         if FileManager.default.fileExists(atPath: url.path){
+            //Play again
             let path = AudioPlayerManager.shared.audioFIleInUserDocuments(fileName: "recording\(index!.row)")
-            AudioPlayerManager.shared.play(path: path)
+            
+            let url = URL.init(string: path)
+            
+            do {
+                self.avplayer = try AVAudioPlayer(contentsOf: url!)
+                
+                
+                NSLog("\(self.avplayer?.duration)".convertTime())
+                
+                self.lblEnd.text = "\(self.avplayer!.duration)".convertTime()
+                
+                self.currentLength = Int((self.avplayer?.duration)!)
+                
+                self.btnPlay.isEnabled = true
+                self.btnPlay.setBackgroundImage(#imageLiteral(resourceName: "Pause"), for: .normal)
+                self.avplayer?.play()
+                
+                self.timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateTimer), userInfo: nil, repeats: true)
+                
+            } catch {
+                print("Error loading file", error.localizedDescription)
+            }
         }
     }
     
     func holdButton(cell: RecordCollectionViewCell) {
+        //action sheet
+        
         let index = self.collectView.indexPath(for: cell)
-        self.currentRecordIndex = (index?.row)!
-        if (self.viewRecordBG.isHidden == false){
-            return
+        let actionSheet = UIAlertController(title: "Select", message: "", preferredStyle: .actionSheet)
+        
+        if (self.isExisted(index: (index?.row)!)){
+            
+            let record = UIAlertAction(title: "Record Again", style: .default) { (alert) in
+                self.currentRecordIndex = (index?.row)!
+                if (self.viewRecordBG.isHidden == false){
+                    return
+                }
+                
+                self.currentRecordIndex = index!.row
+                
+                let text = self.listTitleButton[self.currentRecordIndex]
+                
+                self.titleRecord.text = "Button: \(text)"
+                self.avplayer?.pause()
+                self.btnPlay.setBackgroundImage(#imageLiteral(resourceName: "Play"), for: .normal)
+                
+                self.initRecord(hidden: false)
+            }
+            
+            let share = UIAlertAction(title: "Share", style: .default) { (alert) in
+                var url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                url = url.appendingPathComponent("recording\(index!.row).m4a")
+                
+                
+                let objectsToShare = [url]
+                
+                let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
+                
+                self.present(activityVC, animated: true, completion: nil)
+                
+            }
+            
+            let cancel =  UIAlertAction(title: "Cancel", style: .cancel, handler: { (alert) in
+                
+            })
+            
+            let delete = UIAlertAction(title: "Delete", style: .destructive, handler: { (alert) in
+                do {
+                    var url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                    
+                    url = url.appendingPathComponent("recording\(index!.row).m4a")
+                    
+                    //alert 2 
+                    let alertConfirm = UIAlertController(title: "Confirm", message: "Do you want to delete this file?", preferredStyle: .alert)
+                    
+                    let actionOK = UIAlertAction(title: "OK", style: .default, handler: { (alert) in
+                        do {
+                            if (FileManager.default.isDeletableFile(atPath: url.path)) {
+                                try FileManager.default.removeItem(atPath: url.path)
+                                self.listTitleButton[(index?.row)!] = "\(index!.row + 1)"
+                                self.saveData()
+                                self.collectView.reloadData()
+                            }
+                        } catch{
+                            
+                        }
+                    })
+                    
+                    let cancel = UIAlertAction(title: "Cancel", style: .destructive, handler: { (alert) in
+                        
+                    })
+                    
+                    alertConfirm.addAction(cancel)
+                    alertConfirm.addAction(actionOK)
+                    
+                    self.present(alertConfirm, animated: true, completion: nil)
+                    
+                }catch{
+                    
+                }
+            })
+            
+            
+            actionSheet.addAction(record)
+            
+            actionSheet.addAction(share)
+            
+            actionSheet.addAction(delete)
+            
+            actionSheet.addAction(cancel)
+            
+            self.present(actionSheet, animated: true, completion: nil)
+
+        } else {
+            self.currentRecordIndex = (index?.row)!
+            if (self.viewRecordBG.isHidden == false){
+                return
+            }
+            
+            self.currentRecordIndex = index!.row
+            
+            let text = self.listTitleButton[self.currentRecordIndex]
+            
+            self.titleRecord.text = "Button: \(text)"
+            self.avplayer?.pause()
+            self.btnPlay.setBackgroundImage(#imageLiteral(resourceName: "Play"), for: .normal)
+            
+            self.initRecord(hidden: false)
+
         }
-        
-        self.currentRecordIndex = index!.row
-        
-        let text = self.listTitleButton[self.currentRecordIndex]
-        
-        self.titleRecord.text = "Button: \(text)"
-        self.avplayer?.pause()
-        self.btnPlay.setBackgroundImage(#imageLiteral(resourceName: "Play"), for: .normal)
-        
-        self.initRecord(hidden: false)
     }
 }
 
